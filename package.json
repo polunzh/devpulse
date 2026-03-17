@@ -1,0 +1,14 @@
+{
+  "name": "devpulse",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter @devpulse/web dev",
+    "build": "pnpm --filter @devpulse/core build && pnpm --filter @devpulse/web build",
+    "test": "pnpm --filter @devpulse/core test",
+    "start": "pnpm --filter @devpulse/web start"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["better-sqlite3", "esbuild"]
+  }
+}
