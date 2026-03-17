@@ -230,6 +230,7 @@ interface RawPost {
 - 每次抓取后，将新增 posts 按批次（20 条/批）发送给 Claude
 - Prompt 包含：用户兴趣关键词列表 + 权重 + 这批文章的标题和摘要
 - Claude 返回每篇文章的：`ai_score`（0-1）、`tags`（标签数组）、`ai_reason`（推荐理由）
+- **容错**：API 不可用或限流时，posts 以 `ai_score = null` 存入，仅按站点原生热度排序，后续可重试评分
 
 ### Prompt 结构
 
@@ -249,7 +250,7 @@ interface RawPost {
 ### 兴趣学习
 
 - 用户点击阅读 → 该文章的 tags 权重 +0.1
-- 长期未点击某 tag 相关内容 → 权重缓慢衰减
+- 连续 7 天未点击某 tag 相关内容 → 权重每天衰减 0.05，最低不低于 0.1
 - `source: "learned"` 的关键词从高频 tags 中自动生成
 - 权重调整逻辑在 `packages/core/src/services/interest.service.ts`
 
@@ -258,6 +259,8 @@ interface RawPost {
 ```
 final_score = site_score_normalized * 0.4 + ai_score * 0.6
 ```
+
+**站点热度归一化**：每个站点内部，将 `score` 按当前批次的最大值归一化到 0-1 范围：`site_score_normalized = score / max_score_in_batch`。
 
 Web UI 列表按 `final_score` 降序展示，已读的放后面或隐藏。
 
