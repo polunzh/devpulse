@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20, 22]
+        node-version: [22, 24]
 
     steps:
       - uses: actions/checkout@v4
@@ -35,10 +35,10 @@ jobs:
         run: pnpm --filter @devpulse/core build
 
       - name: Run tests with coverage
-        run: pnpm --filter @devpulse/core vitest run --coverage
+        run: pnpm --filter @devpulse/core test:coverage
 
       - name: Generate and commit coverage badge
-        if: matrix.node-version == 22 && github.ref == 'refs/heads/master' && github.event_name == 'push'
+        if: matrix.node-version == 24 && github.ref == 'refs/heads/master' && github.event_name == 'push'
         run: |
           COVERAGE=$(node -e "
             const s = require('./packages/core/coverage/coverage-summary.json');
