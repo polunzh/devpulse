@@ -1,5 +1,8 @@
 # DevPulse
 
+[![CI](https://github.com/polunzh/devpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/polunzh/devpulse/actions/workflows/ci.yml)
+![Coverage](https://raw.githubusercontent.com/polunzh/devpulse/master/.github/badges/coverage.svg)
+
 [English](./README.md)
 
 个人开发者热点内容聚合工具。从 HackerNews、Reddit、V2EX、Medium 等站点收集热门内容，支持 AI 个性化推荐。
