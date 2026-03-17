@@ -65,6 +65,9 @@ importers:
       fastify:
         specifier: ^5.0.0
         version: 5.8.2
+      node-cron:
+        specifier: ^3.0.3
+        version: 3.0.3
       vue:
         specifier: ^3.5.0
         version: 3.5.30(typescript@5.9.3)
@@ -72,6 +75,9 @@ importers:
         specifier: ^4.5.0
         version: 4.6.4(vue@3.5.30(typescript@5.9.3))
     devDependencies:
+      '@types/node-cron':
+        specifier: ^3.0.11
+        version: 3.0.11
       '@vitejs/plugin-vue':
         specifier: ^5.2.0
         version: 5.2.4(vite@6.4.1(@types/node@22.19.15)(tsx@4.21.0))(vue@3.5.30(typescript@5.9.3))
@@ -887,6 +893,9 @@ packages:
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
+
+  '@types/node-cron@3.0.11':
+    resolution: {integrity: sha512-0ikrnug3/IyneSHqCBeslAhlK2aBfYek1fGo4bP4QnZPmiqSGRK+Oy7ZMisLWkesffJvQ1cqAcBnJC+8+nxIAg==}
 
   '@types/node@22.19.15':
     resolution: {integrity: sha512-F0R/h2+dsy5wJAUe3tAU6oqa2qbWY5TpNfL/RGmo1y38hiyO1w3x2jPtt76wmuaJI4DQnOBu21cNXQ2STIUUWg==}
@@ -2289,6 +2298,8 @@ snapshots:
   '@types/deep-eql@4.0.2': {}
 
   '@types/estree@1.0.8': {}
+
+  '@types/node-cron@3.0.11': {}
 
   '@types/node@22.19.15':
     dependencies:
