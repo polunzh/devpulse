@@ -5,3 +5,4 @@ dist-server/
 *.db-journal
 .env
 .superpowers/
+.claire/
