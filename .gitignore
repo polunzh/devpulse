@@ -3,6 +3,8 @@ dist/
 dist-server/
 *.db
 *.db-journal
+*.db-shm
+*.db-wal
 .env
 .superpowers/
 .claire/
