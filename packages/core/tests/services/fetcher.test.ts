@@ -68,4 +68,22 @@ describe('FetcherService', () => {
     const posts = postService.list({});
     expect(posts).toHaveLength(0);
   });
+
+  it('should fetch all enabled sites', async () => {
+    const siteService = new SiteService(db);
+    const postService = new PostService(db);
+    const interestService = new InterestService(db);
+    const fetcher = new FetcherService(postService, siteService, interestService, mockAiService, () => mockAdapter);
+
+    siteService.create({ name: 'Site 1', adapter: 'test' });
+    siteService.create({ name: 'Site 2', adapter: 'test' });
+    const disabled = siteService.create({ name: 'Site 3', adapter: 'test' });
+    siteService.update(disabled.id, { enabled: 0 });
+
+    await fetcher.fetchAll();
+
+    const posts = postService.list({});
+    // 2 enabled sites × 2 posts each = 4 (disabled site skipped)
+    expect(posts).toHaveLength(4);
+  });
 });

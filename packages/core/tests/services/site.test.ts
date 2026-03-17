@@ -58,4 +58,13 @@ describe('SiteService', () => {
     service.delete(site.id);
     expect(service.getById(site.id)).toBeUndefined();
   });
+
+  it('should list only enabled sites', () => {
+    const s1 = service.create({ name: 'HN', adapter: 'hn' });
+    service.create({ name: 'Reddit', adapter: 'reddit' });
+    service.update(s1.id, { enabled: 0 });
+    const enabled = service.listEnabled();
+    expect(enabled).toHaveLength(1);
+    expect(enabled[0].name).toBe('Reddit');
+  });
 });
