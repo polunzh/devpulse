@@ -8,13 +8,12 @@
   },
   "dependencies": {
     "@devpulse/core": "workspace:*",
-    "hono": "^4.0.0",
     "drizzle-orm": "^0.39.0",
-    "@anthropic-ai/sdk": "^0.52.0"
+    "hono": "^4.0.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.0.0",
-    "wrangler": "^4.0.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "wrangler": "^4.0.0"
   }
 }

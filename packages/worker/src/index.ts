@@ -10,7 +10,9 @@ import { fetchRoutes } from './routes/fetch.js';
 
 export interface Env {
   DB: D1Database;
-  ANTHROPIC_API_KEY?: string;
+  AI_API_KEY?: string;
+  AI_BASE_URL?: string;   // e.g. https://api.moonshot.cn/v1
+  AI_MODEL?: string;      // e.g. moonshot-v1-8k
 }
 
 export interface AppServices {
@@ -35,8 +37,9 @@ app.use('/api/*', async (c, next) => {
   const siteService = new SiteService(db);
   const postService = new PostService(db);
   const interestService = new InterestService(db);
-  const apiKey = c.env.ANTHROPIC_API_KEY;
-  const aiService = apiKey ? new AiService(apiKey) : null;
+  const aiService = c.env.AI_API_KEY
+    ? new AiService({ apiKey: c.env.AI_API_KEY, baseUrl: c.env.AI_BASE_URL, model: c.env.AI_MODEL })
+    : null;
   const fetcherService = new FetcherService(
     postService, siteService, interestService,
     aiService,
@@ -60,8 +63,9 @@ export default {
     const siteService = new SiteService(db);
     const postService = new PostService(db);
     const interestService = new InterestService(db);
-    const apiKey = env.ANTHROPIC_API_KEY;
-    const aiService = apiKey ? new AiService(apiKey) : null;
+    const aiService = env.AI_API_KEY
+      ? new AiService({ apiKey: env.AI_API_KEY, baseUrl: env.AI_BASE_URL, model: env.AI_MODEL })
+      : null;
     const fetcherService = new FetcherService(
       postService, siteService, interestService,
       aiService,

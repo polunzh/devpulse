@@ -44,8 +44,13 @@ export async function buildApp(dbPath: string) {
   const postService = new PostService(db);
   const interestService = new InterestService(db);
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  const aiService = apiKey ? new AiService(apiKey) : null;
+  const aiService = process.env.AI_API_KEY
+    ? new AiService({
+        apiKey: process.env.AI_API_KEY,
+        baseUrl: process.env.AI_BASE_URL,
+        model: process.env.AI_MODEL,
+      })
+    : null;
 
   const fetcherService = new FetcherService(
     postService, siteService, interestService,
