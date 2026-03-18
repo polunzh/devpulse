@@ -20,8 +20,8 @@ describe('Integration: Full fetch-to-read flow', () => {
     const interestService = new InterestService(db);
 
     // Add interests
-    interestService.add('Rust', 'manual');
-    interestService.add('AI', 'manual');
+    await interestService.add('Rust', 'manual');
+    await interestService.add('AI', 'manual');
 
     // Mock adapter
     const mockAdapter: Adapter = {
@@ -47,20 +47,20 @@ describe('Integration: Full fetch-to-read flow', () => {
     const fetcher = new FetcherService(postService, siteService, interestService, mockAi, () => mockAdapter);
 
     // Create site and fetch
-    const site = siteService.create({ name: 'Test Site', adapter: 'test' });
+    const site = await siteService.create({ name: 'Test Site', adapter: 'test' });
     await fetcher.fetchSite(site.id);
 
     // Verify posts exist with AI scores
-    const allPosts = postService.list({ sortBy: 'score' });
+    const allPosts = await postService.list({ sortBy: 'score' });
     expect(allPosts).toHaveLength(3);
     expect(allPosts[0].title).toBe('Rust in Production');
     expect(allPosts[0].aiScore).toBe(0.95);
 
     // Mark first as read
-    postService.markAsRead(allPosts[0].id);
+    await postService.markAsRead(allPosts[0].id);
 
     // Verify unread filter
-    const unread = postService.list({ unreadOnly: true });
+    const unread = await postService.list({ unreadOnly: true });
     expect(unread).toHaveLength(2);
 
     // Verify AI was called

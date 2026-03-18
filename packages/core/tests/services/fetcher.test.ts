@@ -42,10 +42,10 @@ describe('FetcherService', () => {
     const interestService = new InterestService(db);
     const fetcher = new FetcherService(postService, siteService, interestService, mockAiService, () => mockAdapter);
 
-    const site = siteService.create({ name: 'Test', adapter: 'test' });
+    const site = await siteService.create({ name: 'Test', adapter: 'test' });
     await fetcher.fetchSite(site.id);
 
-    const posts = postService.list({});
+    const posts = await postService.list({});
     expect(posts).toHaveLength(2);
     expect(posts.some(p => p.aiScore === 0.9)).toBe(true);
   });
@@ -62,10 +62,10 @@ describe('FetcherService', () => {
     const interestService = new InterestService(db);
     const fetcher = new FetcherService(postService, siteService, interestService, mockAiService, () => failAdapter);
 
-    const site = siteService.create({ name: 'Fail', adapter: 'fail' });
+    const site = await siteService.create({ name: 'Fail', adapter: 'fail' });
     await fetcher.fetchSite(site.id);
 
-    const posts = postService.list({});
+    const posts = await postService.list({});
     expect(posts).toHaveLength(0);
   });
 
@@ -75,14 +75,14 @@ describe('FetcherService', () => {
     const interestService = new InterestService(db);
     const fetcher = new FetcherService(postService, siteService, interestService, mockAiService, () => mockAdapter);
 
-    siteService.create({ name: 'Site 1', adapter: 'test' });
-    siteService.create({ name: 'Site 2', adapter: 'test' });
-    const disabled = siteService.create({ name: 'Site 3', adapter: 'test' });
-    siteService.update(disabled.id, { enabled: 0 });
+    await siteService.create({ name: 'Site 1', adapter: 'test' });
+    await siteService.create({ name: 'Site 2', adapter: 'test' });
+    const disabled = await siteService.create({ name: 'Site 3', adapter: 'test' });
+    await siteService.update(disabled.id, { enabled: 0 });
 
     await fetcher.fetchAll();
 
-    const posts = postService.list({});
+    const posts = await postService.list({});
     // 2 enabled sites × 2 posts each = 4 (disabled site skipped)
     expect(posts).toHaveLength(4);
   });

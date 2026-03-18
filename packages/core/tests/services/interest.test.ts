@@ -14,25 +14,25 @@ describe('InterestService', () => {
 
   afterEach(() => sqlite.close());
 
-  it('should add a manual interest', () => {
-    service.add('Rust', 'manual');
-    const all = service.listAll();
+  it('should add a manual interest', async () => {
+    await service.add('Rust', 'manual');
+    const all = await service.listAll();
     expect(all).toHaveLength(1);
     expect(all[0].keyword).toBe('Rust');
     expect(all[0].source).toBe('manual');
     expect(all[0].weight).toBe(1.0);
   });
 
-  it('should not duplicate interests', () => {
-    service.add('Rust', 'manual');
-    service.add('Rust', 'manual');
-    expect(service.listAll()).toHaveLength(1);
+  it('should not duplicate interests', async () => {
+    await service.add('Rust', 'manual');
+    await service.add('Rust', 'manual');
+    expect(await service.listAll()).toHaveLength(1);
   });
 
-  it('should boost weight when reading related tags', () => {
-    service.add('AI', 'manual');
-    service.boostForTags(['AI', 'LLM']);
-    const all = service.listAll();
+  it('should boost weight when reading related tags', async () => {
+    await service.add('AI', 'manual');
+    await service.boostForTags(['AI', 'LLM']);
+    const all = await service.listAll();
     const ai = all.find(i => i.keyword === 'AI');
     expect(ai!.weight).toBe(1.1);
     const llm = all.find(i => i.keyword === 'LLM');
@@ -40,28 +40,28 @@ describe('InterestService', () => {
     expect(llm!.source).toBe('learned');
   });
 
-  it('should decay unused interests', () => {
-    service.add('OldTopic', 'learned');
+  it('should decay unused interests', async () => {
+    await service.add('OldTopic', 'learned');
     for (let i = 0; i < 7; i++) {
-      service.decayUnused(new Set());
+      await service.decayUnused(new Set());
     }
-    const interest = service.listAll().find(i => i.keyword === 'OldTopic');
+    const interest = (await service.listAll()).find(i => i.keyword === 'OldTopic');
     expect(interest!.weight).toBeCloseTo(0.65);
   });
 
-  it('should not decay below 0.1', () => {
-    service.add('OldTopic', 'learned');
+  it('should not decay below 0.1', async () => {
+    await service.add('OldTopic', 'learned');
     for (let i = 0; i < 100; i++) {
-      service.decayUnused(new Set());
+      await service.decayUnused(new Set());
     }
-    const interest = service.listAll().find(i => i.keyword === 'OldTopic');
+    const interest = (await service.listAll()).find(i => i.keyword === 'OldTopic');
     expect(interest!.weight).toBeGreaterThanOrEqual(0.1);
   });
 
-  it('should remove an interest', () => {
-    service.add('Rust', 'manual');
-    const all = service.listAll();
-    service.remove(all[0].id);
-    expect(service.listAll()).toHaveLength(0);
+  it('should remove an interest', async () => {
+    await service.add('Rust', 'manual');
+    const all = await service.listAll();
+    await service.remove(all[0].id);
+    expect(await service.listAll()).toHaveLength(0);
   });
 });

@@ -16,13 +16,13 @@ export class FetcherService {
   ) {}
 
   async fetchSite(siteId: string) {
-    const site = this.siteService.getById(siteId);
+    const site = await this.siteService.getById(siteId);
     if (!site) throw new Error(`Site ${siteId} not found`);
 
     const adapter = this.getAdapter(site.adapter);
     if (!adapter) throw new Error(`Adapter ${site.adapter} not found`);
 
-    const config = this.siteService.getConfigs(siteId);
+    const config = await this.siteService.getConfigs(siteId);
 
     let rawPosts;
     try {
@@ -32,16 +32,16 @@ export class FetcherService {
       return;
     }
 
-    this.postService.savePosts(siteId, rawPosts);
+    await this.postService.savePosts(siteId, rawPosts);
 
     // Update last_fetched_at
-    this.siteService.update(siteId, { lastFetchedAt: new Date().toISOString() });
+    await this.siteService.update(siteId, { lastFetchedAt: new Date().toISOString() });
 
     // AI scoring in batches (skip if no AI service configured)
     if (!this.aiService) return;
 
-    const interests = this.interestService.listAll();
-    const savedPosts = this.postService.list({ siteId });
+    const interests = await this.interestService.listAll();
+    const savedPosts = await this.postService.list({ siteId });
     const unscoredPosts = savedPosts.filter(p => p.aiScore === null);
 
     for (let i = 0; i < unscoredPosts.length; i += BATCH_SIZE) {
@@ -60,14 +60,14 @@ export class FetcherService {
       for (const result of scores) {
         const post = batch[result.index];
         if (post) {
-          this.postService.updateAiScore(post.id, result.score, result.reason, result.tags);
+          await this.postService.updateAiScore(post.id, result.score, result.reason, result.tags);
         }
       }
     }
   }
 
   async fetchAll() {
-    const enabledSites = this.siteService.listEnabled();
+    const enabledSites = await this.siteService.listEnabled();
     for (const site of enabledSites) {
       await this.fetchSite(site.id);
     }

@@ -10,46 +10,46 @@ const MIN_WEIGHT = 0.1;
 export class InterestService {
   constructor(private db: AppDb) {}
 
-  add(keyword: string, source: 'manual' | 'learned', weight = 1.0) {
-    const existing = this.db.select().from(interests).where(eq(interests.keyword, keyword)).get();
+  async add(keyword: string, source: 'manual' | 'learned', weight = 1.0) {
+    const existing = await this.db.select().from(interests).where(eq(interests.keyword, keyword)).get();
     if (existing) return existing;
 
     const id = uuid();
-    this.db.insert(interests).values({ id, keyword, weight, source }).run();
-    return this.db.select().from(interests).where(eq(interests.id, id)).get()!;
+    await this.db.insert(interests).values({ id, keyword, weight, source }).run();
+    return (await this.db.select().from(interests).where(eq(interests.id, id)).get())!;
   }
 
-  listAll() {
-    return this.db.select().from(interests).all();
+  async listAll() {
+    return await this.db.select().from(interests).all();
   }
 
-  remove(id: string) {
-    this.db.delete(interests).where(eq(interests.id, id)).run();
+  async remove(id: string) {
+    await this.db.delete(interests).where(eq(interests.id, id)).run();
   }
 
-  updateWeight(id: string, weight: number) {
-    this.db.update(interests).set({
+  async updateWeight(id: string, weight: number) {
+    await this.db.update(interests).set({
       weight: Math.max(MIN_WEIGHT, weight),
       updatedAt: new Date().toISOString(),
     }).where(eq(interests.id, id)).run();
   }
 
-  boostForTags(tagNames: string[]) {
+  async boostForTags(tagNames: string[]) {
     for (const tag of tagNames) {
-      const existing = this.db.select().from(interests).where(eq(interests.keyword, tag)).get();
+      const existing = await this.db.select().from(interests).where(eq(interests.keyword, tag)).get();
       if (existing) {
-        this.updateWeight(existing.id, existing.weight + BOOST_INCREMENT);
+        await this.updateWeight(existing.id, existing.weight + BOOST_INCREMENT);
       } else {
-        this.add(tag, 'learned', BOOST_INCREMENT);
+        await this.add(tag, 'learned', BOOST_INCREMENT);
       }
     }
   }
 
-  decayUnused(activeKeywords: Set<string>) {
-    const all = this.listAll();
+  async decayUnused(activeKeywords: Set<string>) {
+    const all = await this.listAll();
     for (const interest of all) {
       if (!activeKeywords.has(interest.keyword)) {
-        this.updateWeight(interest.id, interest.weight - DECAY_RATE);
+        await this.updateWeight(interest.id, interest.weight - DECAY_RATE);
       }
     }
   }
