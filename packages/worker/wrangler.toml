@@ -2,14 +2,18 @@ name = "devpulse-api"
 main = "src/index.ts"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
+workers_dev = true
 
 [[d1_databases]]
 binding = "DB"
 database_name = "devpulse-db"
-database_id = "" # Fill after running: wrangler d1 create devpulse-db
+database_id = "c3b2ef28-c951-410b-8467-0ab044705d03"
 
-[vars]
-# ANTHROPIC_API_KEY = "" # Set via: wrangler secret put ANTHROPIC_API_KEY
+# Set via: wrangler secret put ANTHROPIC_API_KEY
+
+[[routes]]
+pattern = "devpulse-api.127.dev/*"
+zone_name = "127.dev"
 
 [triggers]
 crons = ["0 * * * *"]

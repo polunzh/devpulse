@@ -42,11 +42,11 @@ export class FetcherService {
 
     const interests = await this.interestService.listAll();
     const savedPosts = await this.postService.list({ siteId });
-    const unscoredPosts = savedPosts.filter(p => p.aiScore === null);
+    const unscoredPosts = savedPosts.filter((p: any) => p.aiScore === null);
 
     for (let i = 0; i < unscoredPosts.length; i += BATCH_SIZE) {
       const batch = unscoredPosts.slice(i, i + BATCH_SIZE);
-      const inputs = batch.map(p => ({
+      const inputs = batch.map((p: any) => ({
         title: p.title,
         summary: p.summary || undefined,
         source: site.name,
@@ -54,7 +54,7 @@ export class FetcherService {
 
       const scores = await this.aiService.scorePosts(
         inputs,
-        interests.map(i => ({ keyword: i.keyword, weight: i.weight })),
+        interests.map((i: any) => ({ keyword: i.keyword, weight: i.weight })),
       );
 
       for (const result of scores) {

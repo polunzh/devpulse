@@ -60,7 +60,7 @@ export class SiteService {
     const rows = await this.db.select().from(siteConfigs)
       .where(eq(siteConfigs.siteId, siteId))
       .all();
-    const existing = rows.find(c => c.key === key);
+    const existing = rows.find((c: any) => c.key === key);
 
     if (existing) {
       await this.db.update(siteConfigs).set({
@@ -80,6 +80,6 @@ export class SiteService {
   async getConfigs(siteId: string): Promise<Record<string, string>> {
     const rows = await this.db.select().from(siteConfigs)
       .where(eq(siteConfigs.siteId, siteId)).all();
-    return Object.fromEntries(rows.map(r => [r.key, r.value]));
+    return Object.fromEntries(rows.map((r: any) => [r.key, r.value]));
   }
 }

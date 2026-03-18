@@ -54,7 +54,7 @@ export class PostService {
     }
 
     if (options.unreadOnly) {
-      const readPostIds = (await this.db.select({ postId: readHistory.postId }).from(readHistory).all()).map(r => r.postId);
+      const readPostIds = (await this.db.select({ postId: readHistory.postId }).from(readHistory).all()).map((r: any) => r.postId);
       if (readPostIds.length > 0) {
         conditions.push(notInArray(posts.id, readPostIds));
       }
@@ -72,7 +72,7 @@ export class PostService {
         }
       }
 
-      rows.sort((a, b) => {
+      rows.sort((a: any, b: any) => {
         const aMaxScore = siteMaxScores.get(a.siteId) || 1;
         const bMaxScore = siteMaxScores.get(b.siteId) || 1;
         const aNorm = (a.score || 0) / (aMaxScore || 1);
@@ -82,7 +82,7 @@ export class PostService {
         return bFinal - aFinal;
       });
     } else {
-      rows.sort((a, b) => {
+      rows.sort((a: any, b: any) => {
         const aTime = a.publishedAt || a.fetchedAt;
         const bTime = b.publishedAt || b.fetchedAt;
         return bTime.localeCompare(aTime);
@@ -111,7 +111,7 @@ export class PostService {
       .innerJoin(tags, eq(postTags.tagId, tags.id))
       .where(eq(postTags.postId, postId))
       .all();
-    return rows.map(r => r.name);
+    return rows.map((r: any) => r.name);
   }
 
   async updateAiScore(postId: string, aiScore: number, aiReason: string, tagNames: string[]) {
