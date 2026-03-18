@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
+import type { BaseSQLiteDatabase } from 'drizzle-orm/sqlite-core';
 import * as schema from './schema.js';
 
 export function createDb(dbPath: string) {
@@ -9,4 +10,5 @@ export function createDb(dbPath: string) {
   return drizzle(sqlite, { schema });
 }
 
-export type AppDb = ReturnType<typeof createDb>;
+// Generic type that works with both better-sqlite3 (sync) and D1 (async)
+export type AppDb = BaseSQLiteDatabase<any, any, typeof schema>;

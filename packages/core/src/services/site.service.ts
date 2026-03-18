@@ -20,55 +20,55 @@ interface UpdateSiteInput {
 export class SiteService {
   constructor(private db: AppDb) {}
 
-  create(input: CreateSiteInput) {
+  async create(input: CreateSiteInput) {
     const id = uuid();
-    this.db.insert(sites).values({
+    await this.db.insert(sites).values({
       id,
       name: input.name,
       adapter: input.adapter,
       enabled: input.enabled ?? 1,
       fetchInterval: input.fetchInterval ?? 60,
     }).run();
-    return this.getById(id)!;
+    return (await this.getById(id))!;
   }
 
-  getById(id: string) {
-    return this.db.select().from(sites).where(eq(sites.id, id)).get();
+  async getById(id: string) {
+    return await this.db.select().from(sites).where(eq(sites.id, id)).get();
   }
 
-  listAll() {
-    return this.db.select().from(sites).all();
+  async listAll() {
+    return await this.db.select().from(sites).all();
   }
 
-  listEnabled() {
-    return this.db.select().from(sites).where(eq(sites.enabled, 1)).all();
+  async listEnabled() {
+    return await this.db.select().from(sites).where(eq(sites.enabled, 1)).all();
   }
 
-  update(id: string, input: UpdateSiteInput) {
-    this.db.update(sites).set({
+  async update(id: string, input: UpdateSiteInput) {
+    await this.db.update(sites).set({
       ...input,
       updatedAt: new Date().toISOString(),
     }).where(eq(sites.id, id)).run();
   }
 
-  delete(id: string) {
-    this.db.delete(siteConfigs).where(eq(siteConfigs.siteId, id)).run();
-    this.db.delete(sites).where(eq(sites.id, id)).run();
+  async delete(id: string) {
+    await this.db.delete(siteConfigs).where(eq(siteConfigs.siteId, id)).run();
+    await this.db.delete(sites).where(eq(sites.id, id)).run();
   }
 
-  setConfig(siteId: string, key: string, value: string) {
-    const existing = this.db.select().from(siteConfigs)
+  async setConfig(siteId: string, key: string, value: string) {
+    const rows = await this.db.select().from(siteConfigs)
       .where(eq(siteConfigs.siteId, siteId))
-      .all()
-      .find(c => c.key === key);
+      .all();
+    const existing = rows.find(c => c.key === key);
 
     if (existing) {
-      this.db.update(siteConfigs).set({
+      await this.db.update(siteConfigs).set({
         value,
         updatedAt: new Date().toISOString(),
       }).where(eq(siteConfigs.id, existing.id)).run();
     } else {
-      this.db.insert(siteConfigs).values({
+      await this.db.insert(siteConfigs).values({
         id: uuid(),
         siteId,
         key,
@@ -77,8 +77,8 @@ export class SiteService {
     }
   }
 
-  getConfigs(siteId: string): Record<string, string> {
-    const rows = this.db.select().from(siteConfigs)
+  async getConfigs(siteId: string): Promise<Record<string, string>> {
+    const rows = await this.db.select().from(siteConfigs)
       .where(eq(siteConfigs.siteId, siteId)).all();
     return Object.fromEntries(rows.map(r => [r.key, r.value]));
   }
