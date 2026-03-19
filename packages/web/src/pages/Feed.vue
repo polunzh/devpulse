@@ -1,16 +1,46 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { api } from '../api/client';
 import PostItem from '../components/PostItem.vue';
 import SiteFilter from '../components/SiteFilter.vue';
 
+const route = useRoute();
+const router = useRouter();
+
 const posts = ref<any[]>([]);
 const sites = ref<any[]>([]);
-const activeSiteId = ref<string | null>(null);
-const hideRead = ref(false);
-const sortBy = ref<'score' | 'time'>('score');
 const loading = ref(false);
 const readIds = ref(new Set<string>());
+const hidingIds = ref(new Set<string>());
+
+// Read filters from URL query params, fallback to localStorage
+const activeSiteId = ref<string | null>(
+  (route.query.site as string) || localStorage.getItem('devpulse:siteId') || null
+);
+const hideRead = ref(
+  route.query.hideRead === 'true' || localStorage.getItem('devpulse:hideRead') === 'true'
+);
+const sortBy = ref<'score' | 'time'>(
+  (route.query.sort as 'score' | 'time') || (localStorage.getItem('devpulse:sortBy') as 'score' | 'time') || 'score'
+);
+
+// Sync filters to URL + localStorage
+function syncFilters() {
+  const query: Record<string, string> = {};
+  if (activeSiteId.value) query.site = activeSiteId.value;
+  if (hideRead.value) query.hideRead = 'true';
+  if (sortBy.value !== 'score') query.sort = sortBy.value;
+  router.replace({ query });
+
+  if (activeSiteId.value) {
+    localStorage.setItem('devpulse:siteId', activeSiteId.value);
+  } else {
+    localStorage.removeItem('devpulse:siteId');
+  }
+  localStorage.setItem('devpulse:hideRead', String(hideRead.value));
+  localStorage.setItem('devpulse:sortBy', sortBy.value);
+}
 
 async function loadPosts() {
   loading.value = true;
@@ -24,12 +54,30 @@ async function loadPosts() {
 async function handleRead(id: string) {
   readIds.value.add(id);
   await api.posts.markAsRead(id);
+
+  // If hideRead is on, animate the item out after a short delay
+  if (hideRead.value) {
+    setTimeout(() => {
+      hidingIds.value.add(id);
+      // Remove from list after animation completes
+      setTimeout(() => {
+        posts.value = posts.value.filter(p => p.id !== id);
+        hidingIds.value.delete(id);
+        readIds.value.delete(id);
+      }, 400);
+    }, 800);
+  }
 }
 
 async function handleRefresh() {
   loading.value = true;
   await api.fetch.trigger(activeSiteId.value || undefined);
   await loadPosts();
+}
+
+function handleFilterChange() {
+  syncFilters();
+  loadPosts();
 }
 
 onMounted(async () => {
@@ -41,7 +89,8 @@ const displayPosts = computed(() =>
   posts.value.map(p => ({
     ...p,
     isRead: readIds.value.has(p.id),
-    siteName: sites.value.find(s => s.id === p.siteId)?.name,
+    isHiding: hidingIds.value.has(p.id),
+    siteName: sites.value.find((s: any) => s.id === p.siteId)?.name,
   }))
 );
 </script>
@@ -51,8 +100,8 @@ const displayPosts = computed(() =>
     <header class="feed-header">
       <h1>DevPulse</h1>
       <div class="feed-actions">
-        <label><input type="checkbox" v-model="hideRead" @change="loadPosts"> Hide read</label>
-        <select v-model="sortBy" @change="loadPosts">
+        <label><input type="checkbox" v-model="hideRead" @change="handleFilterChange"> Hide read</label>
+        <select v-model="sortBy" @change="handleFilterChange">
           <option value="score">By relevance</option>
           <option value="time">By time</option>
         </select>
@@ -63,13 +112,18 @@ const displayPosts = computed(() =>
       </div>
     </header>
 
-    <SiteFilter :sites="sites" :active-site-id="activeSiteId" @select="(id) => { activeSiteId = id; loadPosts(); }" />
+    <SiteFilter
+      :sites="sites"
+      :active-site-id="activeSiteId"
+      @select="(id) => { activeSiteId = id; handleFilterChange(); }"
+    />
 
     <div class="feed-list">
       <PostItem
         v-for="post in displayPosts"
         :key="post.id"
         :post="post"
+        :class="{ 'post-hiding': post.isHiding }"
         @read="handleRead"
       />
       <p v-if="!loading && displayPosts.length === 0" class="empty">No posts yet. Add sites and fetch!</p>
@@ -85,4 +139,29 @@ const displayPosts = computed(() =>
 .feed-actions button { padding: 4px 12px; cursor: pointer; }
 .feed-actions a { color: #0969da; text-decoration: none; }
 .empty { text-align: center; color: #888; padding: 40px; }
+
+.post-hiding {
+  animation: slideOut 0.4s ease-out forwards;
+}
+
+@keyframes slideOut {
+  0% {
+    opacity: 0.5;
+    max-height: 120px;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 0.2;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+    transform: translateX(60px);
+    overflow: hidden;
+  }
+}
 </style>
