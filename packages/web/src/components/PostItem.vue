@@ -50,23 +50,38 @@ function timeAgo(dateStr?: string) {
 
 <style scoped>
 .post-item {
-  padding: 12px 16px;
-  border-bottom: 1px solid #eee;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border-light);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.15s;
 }
-.post-item:hover { background: #f8f9fa; }
-.post-item:focus-visible { outline: 2px solid #0969da; outline-offset: -2px; }
+.post-item:hover { background: var(--color-primary-light); }
+.post-item:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
 .post-item.read {
-  opacity: 0.65;
-  background: #f5f5f5;
+  opacity: 0.6;
+  background: var(--color-bg);
 }
 .post-item.read .post-title {
-  color: #666;
+  color: var(--color-text-secondary);
 }
-.post-title { margin: 0 0 4px; font-size: 15px; font-weight: 500; }
-.post-meta { font-size: 12px; color: #666; display: flex; gap: 12px; }
-.post-source { color: #0969da; font-weight: 500; }
-.post-score { color: #e67700; }
-.post-reason { font-size: 13px; color: #888; margin: 4px 0 0; }
+.post-title { margin: 0 0 5px; font-size: 15px; font-weight: 500; color: var(--color-text); line-height: 1.4; }
+.post-meta { font-size: 12px; color: var(--color-text-secondary); display: flex; gap: 12px; align-items: center; }
+.post-source {
+  color: var(--color-secondary);
+  font-weight: 600;
+  background: var(--color-secondary-light);
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+.post-score { color: var(--color-primary); font-weight: 600; }
+.post-author { color: var(--color-text-muted); }
+.post-time { color: var(--color-text-muted); }
+.post-reason {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 6px 0 0;
+  padding-left: 8px;
+  border-left: 2px solid var(--color-accent);
+}
 </style>

@@ -15,12 +15,13 @@ const emit = defineEmits<{ remove: [id: string] }>();
 
 <style scoped>
 .interest-tag {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 4px 10px; border-radius: 12px; font-size: 13px;
-  background: #e8f0fe; color: #1a73e8;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 14px; font-size: 13px; font-weight: 500;
+  background: var(--color-secondary-light); color: var(--color-secondary);
+  transition: all 0.15s;
 }
-.interest-tag.learned { background: #fef3e0; color: #e67700; }
-.weight { font-size: 11px; opacity: 0.7; }
-.remove { background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0.5; padding: 0; }
+.interest-tag.learned { background: var(--color-primary-light); color: var(--color-primary-dark); }
+.weight { font-size: 11px; opacity: 0.6; font-weight: 400; }
+.remove { background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0.4; padding: 0; color: inherit; }
 .remove:hover { opacity: 1; }
 </style>

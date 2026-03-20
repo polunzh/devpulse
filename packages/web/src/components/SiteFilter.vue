@@ -27,11 +27,13 @@ const emit = defineEmits<{
 </template>
 
 <style scoped>
-.site-filter { display: flex; gap: 8px; padding: 12px 16px; border-bottom: 1px solid #eee; flex-wrap: wrap; }
+.site-filter { display: flex; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--color-border-light); flex-wrap: wrap; background: var(--color-surface); }
 .site-filter button {
-  padding: 4px 12px; border: 1px solid #ddd; border-radius: 16px;
-  background: white; cursor: pointer; font-size: 13px;
+  padding: 5px 14px; border: 1px solid var(--color-border); border-radius: 16px;
+  background: var(--color-surface); cursor: pointer; font-size: 13px; color: var(--color-text-secondary);
+  transition: all 0.15s;
 }
-.site-filter button.active { background: #0969da; color: white; border-color: #0969da; }
-.site-filter button:focus-visible { outline: 2px solid #0969da; outline-offset: 1px; }
+.site-filter button:hover:not(.active) { background: var(--color-primary-light); border-color: var(--color-primary); color: var(--color-primary); }
+.site-filter button.active { background: var(--color-primary); color: white; border-color: var(--color-primary); font-weight: 500; }
+.site-filter button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
 </style>

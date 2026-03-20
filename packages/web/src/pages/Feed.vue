@@ -115,7 +115,7 @@ const displayPosts = computed(() =>
 <template>
   <div class="feed">
     <header class="feed-header">
-      <h1>DevPulse</h1>
+      <h1><span class="logo-icon">⚡</span> DevPulse</h1>
       <div class="feed-actions">
         <label><input type="checkbox" v-model="hideRead" @change="handleFilterChange"> Hide read</label>
         <select v-model="sortBy" @change="handleFilterChange">
@@ -152,39 +152,34 @@ const displayPosts = computed(() =>
 </template>
 
 <style scoped>
-.feed { max-width: 800px; margin: 0 auto; }
-.feed-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid #eee; }
-.feed-header h1 { margin: 0; font-size: 20px; }
+.feed { max-width: 800px; margin: 0 auto; background: var(--color-surface); min-height: 100vh; box-shadow: var(--shadow-md); }
+.feed-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--color-border); }
+.feed-header h1 { margin: 0; font-size: 20px; color: var(--color-text); }
+.logo-icon { color: var(--color-primary); }
 .feed-actions { display: flex; align-items: center; gap: 12px; font-size: 13px; }
-.feed-actions button { padding: 4px 12px; cursor: pointer; }
-.feed-actions a { color: #0969da; text-decoration: none; }
-.empty { text-align: center; color: #888; padding: 40px; }
+.feed-actions button {
+  padding: 6px 14px; cursor: pointer; border: 1px solid var(--color-border);
+  border-radius: 6px; background: var(--color-surface); color: var(--color-text);
+  transition: all 0.15s;
+}
+.feed-actions button:hover:not(:disabled) { background: var(--color-primary-light); border-color: var(--color-primary); color: var(--color-primary); }
+.feed-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+.feed-actions select { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); }
+.feed-actions a { color: var(--color-secondary); font-weight: 500; }
+.feed-actions a:hover { color: var(--color-primary); }
+.empty { text-align: center; color: var(--color-text-muted); padding: 60px 20px; }
 
-.error-bar { padding: 8px 16px; background: #fef2f2; color: #dc2626; font-size: 13px; cursor: pointer; border-bottom: 1px solid #fecaca; }
-.loading-bar { padding: 8px 16px; background: #eff6ff; color: #2563eb; font-size: 13px; border-bottom: 1px solid #bfdbfe; }
+.error-bar { padding: 10px 16px; background: var(--color-error-bg); color: var(--color-error); font-size: 13px; cursor: pointer; border-bottom: 1px solid #fecaca; border-left: 3px solid var(--color-error); }
+.loading-bar { padding: 10px 16px; background: var(--color-primary-light); color: var(--color-primary-dark); font-size: 13px; border-bottom: 1px solid var(--color-border); border-left: 3px solid var(--color-primary); }
 
 .post-hiding {
   animation: slideOut 0.4s ease-out forwards;
 }
 
 @keyframes slideOut {
-  0% {
-    opacity: 0.5;
-    transform: translateX(0);
-  }
-  50% {
-    opacity: 0.2;
-    transform: translateX(30px);
-  }
-  100% {
-    opacity: 0;
-    height: 0;
-    padding: 0;
-    margin: 0;
-    border: none;
-    transform: translateX(60px);
-    overflow: hidden;
-  }
+  0% { opacity: 0.5; transform: translateX(0); }
+  50% { opacity: 0.2; transform: translateX(30px); }
+  100% { opacity: 0; height: 0; padding: 0; margin: 0; border: none; transform: translateX(60px); overflow: hidden; }
 }
 
 @media (max-width: 640px) {
