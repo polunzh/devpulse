@@ -2,9 +2,9 @@
 
 [![CI](https://github.com/polunzh/devpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/polunzh/devpulse/actions/workflows/ci.yml)
 ![Coverage](https://github.com/polunzh/devpulse/blob/master/.github/badges/coverage.svg?raw=true)
-[![Live Demo](https://img.shields.io/badge/demo-live-f97316)](https://polunzh.github.io/devpulse/)
+[![Live Demo](https://img.shields.io/badge/demo-live-f97316)](https://devpulse.127.dev/demo.html)
 
-[English](./README.md) | [在线演示](https://polunzh.github.io/devpulse/)
+[English](./README.md) | [在线演示](https://devpulse.127.dev/demo.html)
 
 个人开发者热点内容聚合工具。从 HackerNews、Reddit、V2EX、Medium 等站点收集热门内容，支持 AI 个性化推荐。
 

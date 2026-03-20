@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevPulse Demo</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <style>
+    :root {
+      --color-primary: #f97316;
+      --color-primary-light: #fff7ed;
+      --color-primary-dark: #c2410c;
+      --color-primary-hover: #ea580c;
+      --color-secondary: #6366f1;
+      --color-secondary-light: #eef2ff;
+      --color-accent: #10b981;
+      --color-accent-light: #ecfdf5;
+      --color-error: #ef4444;
+      --color-error-bg: #fef2f2;
+      --color-bg: #fffbf7;
+      --color-surface: #ffffff;
+      --color-border: #f0e6db;
+      --color-border-light: #f7f0e8;
+      --color-text: #292017;
+      --color-text-secondary: #78716c;
+      --color-text-muted: #a8a29e;
+      --shadow-md: 0 2px 8px rgba(41, 32, 23, 0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans SC', sans-serif;
+      font-size: 14px; line-height: 1.5;
+      color: var(--color-text); background: var(--color-bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--color-primary); text-decoration: none; }
+
+    /* Demo banner */
+    .demo-banner {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      color: white; text-align: center; padding: 12px 16px; font-size: 13px;
+    }
+    .demo-banner a { color: white; text-decoration: underline; font-weight: 600; }
+
+    /* Feed */
+    .feed { max-width: 800px; margin: 0 auto; background: var(--color-surface); min-height: 100vh; box-shadow: var(--shadow-md); }
+    .feed-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--color-border); }
+    .feed-header h1 { font-size: 20px; }
+    .logo-icon { color: var(--color-primary); }
+    .feed-actions { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+    .feed-actions button, .feed-actions select {
+      padding: 6px 14px; cursor: pointer; border: 1px solid var(--color-border);
+      border-radius: 6px; background: var(--color-surface); color: var(--color-text);
+      font-family: inherit; font-size: inherit; transition: all 0.15s;
+    }
+    .feed-actions button:hover { background: var(--color-primary-light); border-color: var(--color-primary); color: var(--color-primary); }
+    .feed-actions a { color: var(--color-secondary); font-weight: 500; }
+
+    /* Site filter */
+    .site-filter { display: flex; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--color-border-light); flex-wrap: wrap; }
+    .site-filter button {
+      padding: 5px 14px; border: 1px solid var(--color-border); border-radius: 16px;
+      background: var(--color-surface); cursor: pointer; font-size: 13px;
+      color: var(--color-text-secondary); font-family: inherit; transition: all 0.15s;
+    }
+    .site-filter button:hover:not(.active) { background: var(--color-primary-light); border-color: var(--color-primary); color: var(--color-primary); }
+    .site-filter button.active { background: var(--color-primary); color: white; border-color: var(--color-primary); font-weight: 500; }
+
+    /* Post item */
+    .post-item {
+      padding: 14px 16px; border-bottom: 1px solid var(--color-border-light);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .post-item:hover { background: var(--color-primary-light); }
+    .post-item.read { opacity: 0.6; background: var(--color-bg); }
+    .post-item.read .post-title { color: var(--color-text-secondary); }
+    .post-title { margin: 0 0 5px; font-size: 15px; font-weight: 500; line-height: 1.4; }
+    .post-meta { font-size: 12px; color: var(--color-text-secondary); display: flex; gap: 12px; align-items: center; }
+    .post-source {
+      color: var(--color-secondary); font-weight: 600;
+      background: var(--color-secondary-light); padding: 1px 8px;
+      border-radius: 10px; font-size: 11px;
+    }
+    .post-score { color: var(--color-primary); font-weight: 600; }
+    .post-author, .post-time { color: var(--color-text-muted); }
+    .post-reason {
+      font-size: 13px; color: var(--color-text-secondary);
+      margin: 6px 0 0; padding-left: 8px; border-left: 2px solid var(--color-accent);
+    }
+
+    /* Hiding animation */
+    .post-hiding { animation: slideOut 0.4s ease-out forwards; }
+    @keyframes slideOut {
+      0% { opacity: 0.5; transform: translateX(0); }
+      50% { opacity: 0.2; transform: translateX(30px); }
+      100% { opacity: 0; height: 0; padding: 0; margin: 0; border: none; transform: translateX(60px); overflow: hidden; }
+    }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      .feed-header { flex-wrap: wrap; gap: 8px; }
+      .feed-actions { flex-wrap: wrap; }
+      .demo-banner { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-banner">
+    This is a live demo with sample data.
+    <a href="https://github.com/polunzh/devpulse">View on GitHub</a> |
+    <a href="https://github.com/polunzh/devpulse#quick-start">Deploy your own</a>
+  </div>
+
+  <div class="feed" id="app">
+    <header class="feed-header">
+      <h1><span class="logo-icon">⚡</span> DevPulse</h1>
+      <div class="feed-actions">
+        <label><input type="checkbox" id="hideRead"> Hide read</label>
+        <select id="sortBy">
+          <option value="score">By relevance</option>
+          <option value="time">By time</option>
+        </select>
+        <button onclick="refreshPosts()">Refresh</button>
+        <a href="#settings" onclick="alert('Settings page available in full deployment')">Settings</a>
+      </div>
+    </header>
+
+    <div class="site-filter" id="siteFilter"></div>
+    <div id="postList"></div>
+  </div>
+
+  <script>
+    const MOCK_SITES = [
+      { id: 's1', name: 'Hacker News' },
+      { id: 's2', name: 'Reddit/programming' },
+      { id: 's3', name: 'Reddit/rust' },
+      { id: 's4', name: 'V2EX' },
+    ];
+
+    const MOCK_POSTS = [
+      { id: '1', siteId: 's1', title: 'Show HN: I built a real-time collaborative code editor in Rust', url: '#', author: 'rustdev', score: 842, aiScore: 0.95, aiReason: 'Rust 项目，与你的兴趣高度匹配', publishedAt: new Date(Date.now() - 2*3600000).toISOString() },
+      { id: '2', siteId: 's1', title: 'The State of AI in 2026: What Changed', url: '#', author: 'mlresearcher', score: 651, aiScore: 0.92, aiReason: 'AI 领域深度分析，推荐阅读', publishedAt: new Date(Date.now() - 3*3600000).toISOString() },
+      { id: '3', siteId: 's2', title: 'Why we migrated from microservices back to a monolith', url: '#', author: 'sre_engineer', score: 523, aiScore: 0.88, aiReason: '系统设计实践经验，架构决策参考', publishedAt: new Date(Date.now() - 4*3600000).toISOString() },
+      { id: '4', siteId: 's1', title: 'PostgreSQL 18 Released with Major Performance Improvements', url: '#', author: 'pgfan', score: 489, aiScore: 0.75, aiReason: '数据库重大更新，值得关注', publishedAt: new Date(Date.now() - 5*3600000).toISOString() },
+      { id: '5', siteId: 's3', title: 'Announcing Tokio 2.0: The Async Runtime Gets a Major Overhaul', url: '#', author: 'tokio_team', score: 378, aiScore: 0.93, aiReason: 'Rust 异步运行时核心更新', publishedAt: new Date(Date.now() - 1*3600000).toISOString() },
+      { id: '6', siteId: 's2', title: 'How Discord stores trillions of messages', url: '#', author: 'discord_eng', score: 412, aiScore: 0.85, aiReason: '大规模系统设计案例', publishedAt: new Date(Date.now() - 6*3600000).toISOString() },
+      { id: '7', siteId: 's4', title: '分享一个我做的开源项目，用了半年时间', url: '#', author: 'v2exer', score: 156, aiScore: 0.65, aiReason: '开源项目分享，社区讨论', publishedAt: new Date(Date.now() - 7*3600000).toISOString() },
+      { id: '8', siteId: 's1', title: 'CSS just got container queries and they change everything', url: '#', author: 'csswizard', score: 298, aiScore: 0.45, aiReason: '前端技术更新', publishedAt: new Date(Date.now() - 8*3600000).toISOString() },
+      { id: '9', siteId: 's3', title: 'Writing a compiler in Rust: A practical guide', url: '#', author: 'compiler_nerd', score: 267, aiScore: 0.91, aiReason: 'Rust 编译器实践，技术深度高', publishedAt: new Date(Date.now() - 2.5*3600000).toISOString() },
+      { id: '10', siteId: 's4', title: '最近 AI 编程工具测评，Claude Code vs Cursor', url: '#', author: 'techblogger', score: 203, aiScore: 0.78, aiReason: 'AI 工具对比，实用参考', publishedAt: new Date(Date.now() - 9*3600000).toISOString() },
+      { id: '11', siteId: 's2', title: 'TIL: You can use SQLite as a message queue', url: '#', author: 'pragmatic_dev', score: 341, aiScore: 0.72, aiReason: 'SQLite 创新用法', publishedAt: new Date(Date.now() - 10*3600000).toISOString() },
+      { id: '12', siteId: 's1', title: 'The smallest Go binary ever: 14 bytes', url: '#', author: 'gopher', score: 189, aiScore: 0.55, aiReason: '有趣的技术挑战', publishedAt: new Date(Date.now() - 12*3600000).toISOString() },
+    ];
+
+    let activeSiteId = null;
+    let readIds = new Set();
+    let currentSort = 'score';
+
+    function timeAgo(dateStr) {
+      const diff = Date.now() - new Date(dateStr).getTime();
+      const hours = Math.floor(diff / 3600000);
+      if (hours < 1) return 'just now';
+      if (hours < 24) return hours + 'h ago';
+      return Math.floor(hours / 24) + 'd ago';
+    }
+
+    function renderSiteFilter() {
+      const el = document.getElementById('siteFilter');
+      let html = `<button class="${!activeSiteId ? 'active' : ''}" onclick="filterSite(null)">All</button>`;
+      MOCK_SITES.forEach(s => {
+        html += `<button class="${activeSiteId === s.id ? 'active' : ''}" onclick="filterSite('${s.id}')">${s.name}</button>`;
+      });
+      el.innerHTML = html;
+    }
+
+    function getSortedPosts() {
+      let posts = [...MOCK_POSTS];
+      if (activeSiteId) posts = posts.filter(p => p.siteId === activeSiteId);
+
+      const hideRead = document.getElementById('hideRead').checked;
+      if (hideRead) posts = posts.filter(p => !readIds.has(p.id));
+
+      if (currentSort === 'score') {
+        posts.sort((a, b) => {
+          const aFinal = (a.score / 842) * 0.4 + a.aiScore * 0.6;
+          const bFinal = (b.score / 842) * 0.4 + b.aiScore * 0.6;
+          return bFinal - aFinal;
+        });
+      } else {
+        posts.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+      }
+      return posts;
+    }
+
+    function renderPosts() {
+      const posts = getSortedPosts();
+      const el = document.getElementById('postList');
+      if (posts.length === 0) {
+        el.innerHTML = '<p style="text-align:center;color:var(--color-text-muted);padding:60px 20px;">No posts to show.</p>';
+        return;
+      }
+      const siteName = (siteId) => MOCK_SITES.find(s => s.id === siteId)?.name || '';
+      el.innerHTML = posts.map(p => `
+        <div class="post-item ${readIds.has(p.id) ? 'read' : ''}" id="post-${p.id}" onclick="markRead('${p.id}')">
+          <h3 class="post-title">${p.title}</h3>
+          <div class="post-meta">
+            <span class="post-source">${siteName(p.siteId)}</span>
+            <span class="post-score">▲ ${p.score}</span>
+            <span class="post-author">by ${p.author}</span>
+            <span class="post-time">${timeAgo(p.publishedAt)}</span>
+          </div>
+          ${p.aiReason ? `<p class="post-reason">${p.aiReason}</p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function filterSite(id) {
+      activeSiteId = id;
+      renderSiteFilter();
+      renderPosts();
+    }
+
+    function markRead(id) {
+      readIds.add(id);
+      const el = document.getElementById('post-' + id);
+      if (el) el.classList.add('read');
+
+      if (document.getElementById('hideRead').checked) {
+        setTimeout(() => {
+          if (el) el.classList.add('post-hiding');
+          setTimeout(() => renderPosts(), 400);
+        }, 800);
+      }
+    }
+
+    function refreshPosts() {
+      const btn = event.target;
+      btn.textContent = 'Fetching...';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = 'Refresh';
+        btn.disabled = false;
+      }, 1500);
+    }
+
+    document.getElementById('sortBy').addEventListener('change', (e) => {
+      currentSort = e.target.value;
+      renderPosts();
+    });
+    document.getElementById('hideRead').addEventListener('change', () => renderPosts());
+
+    renderSiteFilter();
+    renderPosts();
+  </script>
+</body>
+</html>
