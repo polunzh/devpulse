@@ -15,6 +15,8 @@ A personal developer hotspot content aggregator. Collects trending posts from Ha
 - **Interest learning** — Manual keyword config + automatic learning from reading history
 - **Agent Skills** — Control via Claude Code slash commands (`/devpulse-start`, `/devpulse-fetch`, etc.)
 - **Web UI** — Clean feed list with site filtering, sorting, and settings management
+- **Filter persistence** — Filters saved to URL query params and localStorage, shareable and bookmark-friendly
+- **Animated read hiding** — Read posts smoothly animate out when "Hide read" is enabled
 - **Cloudflare deployment** — Worker + D1 + Pages, single domain, protected by Cloudflare Access
 
 ## Tech Stack
