@@ -224,6 +224,8 @@
     }
 
     function markRead(id) {
+      const post = MOCK_POSTS.find(p => p.id === id);
+      if (post) window.open(post.url, '_blank');
       readIds.add(id);
       const el = document.getElementById('post-' + id);
       if (el) el.classList.add('read');
