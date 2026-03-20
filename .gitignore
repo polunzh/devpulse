@@ -9,3 +9,4 @@ dist-server/
 .superpowers/
 .claire/
 coverage/
+wrangler.local.toml

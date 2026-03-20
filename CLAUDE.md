@@ -31,4 +31,4 @@ cd packages/worker && npx wrangler deploy
 - Production: Cloudflare Worker (Hono) + D1
 - AI: Any OpenAI-compatible provider via AI_API_KEY/AI_BASE_URL/AI_MODEL
 - Auth: Cloudflare Access (Zero Trust)
-- Domain: devpulse.127.dev
+- Deployment config: `packages/worker/wrangler.local.toml` (gitignored, contains database_id and domain)

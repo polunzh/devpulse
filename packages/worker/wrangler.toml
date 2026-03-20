@@ -11,13 +11,17 @@ not_found_handling = "single-page-application"
 [[d1_databases]]
 binding = "DB"
 database_name = "devpulse-db"
-database_id = "c3b2ef28-c951-410b-8467-0ab044705d03"
+database_id = "" # Run: npx wrangler d1 create devpulse-db, then paste the ID here
 
-# Set via: wrangler secret put ANTHROPIC_API_KEY
+# Set AI provider secrets via:
+#   npx wrangler secret put AI_API_KEY
+#   npx wrangler secret put AI_BASE_URL
+#   npx wrangler secret put AI_MODEL
 
-[[routes]]
-pattern = "devpulse.127.dev/*"
-zone_name = "127.dev"
+# Uncomment and customize for your domain:
+# [[routes]]
+# pattern = "devpulse.yourdomain.com/*"
+# zone_name = "yourdomain.com"
 
 [triggers]
 crons = ["0 * * * *"]
