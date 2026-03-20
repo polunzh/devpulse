@@ -3,6 +3,7 @@ import { HackerNewsAdapter } from './hackernews.adapter.js';
 import { RedditAdapter } from './reddit.adapter.js';
 import { V2exAdapter } from './v2ex.adapter.js';
 import { MediumAdapter } from './medium.adapter.js';
+import { DiscourseAdapter } from './discourse.adapter.js';
 
 const adapters = new Map<string, Adapter>();
 
@@ -14,6 +15,7 @@ register(new HackerNewsAdapter());
 register(new RedditAdapter());
 register(new V2exAdapter());
 register(new MediumAdapter());
+register(new DiscourseAdapter());
 
 export function getAdapter(name: string): Adapter | undefined {
   return adapters.get(name);

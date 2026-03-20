@@ -14,11 +14,12 @@ describe('Adapter Registry', () => {
 
   it('should list all registered adapters', () => {
     const all = getAllAdapters();
-    expect(all.length).toBeGreaterThanOrEqual(4);
+    expect(all.length).toBeGreaterThanOrEqual(5);
     const names = all.map(a => a.name);
     expect(names).toContain('hackernews');
     expect(names).toContain('reddit');
     expect(names).toContain('v2ex');
     expect(names).toContain('medium');
+    expect(names).toContain('discourse');
   });
 });
