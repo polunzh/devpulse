@@ -35,4 +35,7 @@ export const api = {
     trigger: (siteId?: string) =>
       request('/fetch', { method: 'POST', body: JSON.stringify({ siteId }) }),
   },
+  adapters: {
+    list: () => request<{ name: string; displayName: string; configSchema: any[] }[]>('/adapters'),
+  },
 };
