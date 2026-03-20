@@ -2,8 +2,9 @@
 
 [![CI](https://github.com/polunzh/devpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/polunzh/devpulse/actions/workflows/ci.yml)
 ![Coverage](https://github.com/polunzh/devpulse/blob/master/.github/badges/coverage.svg?raw=true)
+[![Live Demo](https://img.shields.io/badge/demo-live-f97316)](https://polunzh.github.io/devpulse/)
 
-[中文文档](./README.zh-CN.md)
+[中文文档](./README.zh-CN.md) | [Live Demo](https://polunzh.github.io/devpulse/)
 
 A personal developer hotspot content aggregator. Collects trending posts from HackerNews, Reddit, V2EX, Medium and more, with AI-powered personalized recommendations.
 
