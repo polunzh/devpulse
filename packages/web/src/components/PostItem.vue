@@ -34,12 +34,12 @@ function timeAgo(dateStr?: string) {
 </script>
 
 <template>
-  <div class="post-item" :class="{ read: post.isRead }" @click="handleClick">
+  <div class="post-item" :class="{ read: post.isRead }" role="link" tabindex="0" @click="handleClick" @keydown.enter="handleClick">
     <div class="post-main">
       <h3 class="post-title">{{ post.title }}</h3>
       <div class="post-meta">
         <span class="post-source" v-if="post.siteName">{{ post.siteName }}</span>
-        <span class="post-score">{{ post.score }}</span>
+        <span class="post-score">▲ {{ post.score }}</span>
         <span class="post-author" v-if="post.author">by {{ post.author }}</span>
         <span class="post-time">{{ timeAgo(post.publishedAt) }}</span>
       </div>
@@ -56,7 +56,14 @@ function timeAgo(dateStr?: string) {
   transition: background 0.15s;
 }
 .post-item:hover { background: #f8f9fa; }
-.post-item.read { opacity: 0.5; }
+.post-item:focus-visible { outline: 2px solid #0969da; outline-offset: -2px; }
+.post-item.read {
+  opacity: 0.65;
+  background: #f5f5f5;
+}
+.post-item.read .post-title {
+  color: #666;
+}
 .post-title { margin: 0 0 4px; font-size: 15px; font-weight: 500; }
 .post-meta { font-size: 12px; color: #666; display: flex; gap: 12px; }
 .post-source { color: #0969da; font-weight: 500; }

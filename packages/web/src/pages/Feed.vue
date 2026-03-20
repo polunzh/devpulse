@@ -11,6 +11,7 @@ const router = useRouter();
 const posts = ref<any[]>([]);
 const sites = ref<any[]>([]);
 const loading = ref(false);
+const error = ref('');
 const readIds = ref(new Set<string>());
 const hidingIds = ref(new Set<string>());
 
@@ -44,16 +45,26 @@ function syncFilters() {
 
 async function loadPosts() {
   loading.value = true;
-  const params: Record<string, string> = { sortBy: sortBy.value };
-  if (activeSiteId.value) params.siteId = activeSiteId.value;
-  if (hideRead.value) params.unreadOnly = 'true';
-  posts.value = await api.posts.list(params);
-  loading.value = false;
+  error.value = '';
+  try {
+    const params: Record<string, string> = { sortBy: sortBy.value };
+    if (activeSiteId.value) params.siteId = activeSiteId.value;
+    if (hideRead.value) params.unreadOnly = 'true';
+    posts.value = await api.posts.list(params);
+  } catch (e) {
+    error.value = 'Failed to load posts. Please try again.';
+  } finally {
+    loading.value = false;
+  }
 }
 
 async function handleRead(id: string) {
   readIds.value.add(id);
-  await api.posts.markAsRead(id);
+  try {
+    await api.posts.markAsRead(id);
+  } catch {
+    // Silently fail - read state is already tracked locally
+  }
 
   // If hideRead is on, animate the item out after a short delay
   if (hideRead.value) {
@@ -71,8 +82,14 @@ async function handleRead(id: string) {
 
 async function handleRefresh() {
   loading.value = true;
-  await api.fetch.trigger(activeSiteId.value || undefined);
-  await loadPosts();
+  error.value = '';
+  try {
+    await api.fetch.trigger(activeSiteId.value || undefined);
+    await loadPosts();
+  } catch (e) {
+    error.value = 'Failed to fetch new posts. Please try again.';
+    loading.value = false;
+  }
 }
 
 function handleFilterChange() {
@@ -118,6 +135,9 @@ const displayPosts = computed(() =>
       @select="(id) => { activeSiteId = id; handleFilterChange(); }"
     />
 
+    <div v-if="error" class="error-bar" @click="error = ''">{{ error }} ✕</div>
+    <div v-if="loading" class="loading-bar">Loading...</div>
+
     <div class="feed-list">
       <PostItem
         v-for="post in displayPosts"
@@ -140,6 +160,9 @@ const displayPosts = computed(() =>
 .feed-actions a { color: #0969da; text-decoration: none; }
 .empty { text-align: center; color: #888; padding: 40px; }
 
+.error-bar { padding: 8px 16px; background: #fef2f2; color: #dc2626; font-size: 13px; cursor: pointer; border-bottom: 1px solid #fecaca; }
+.loading-bar { padding: 8px 16px; background: #eff6ff; color: #2563eb; font-size: 13px; border-bottom: 1px solid #bfdbfe; }
+
 .post-hiding {
   animation: slideOut 0.4s ease-out forwards;
 }
@@ -147,7 +170,6 @@ const displayPosts = computed(() =>
 @keyframes slideOut {
   0% {
     opacity: 0.5;
-    max-height: 120px;
     transform: translateX(0);
   }
   50% {
@@ -156,12 +178,18 @@ const displayPosts = computed(() =>
   }
   100% {
     opacity: 0;
-    max-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    height: 0;
+    padding: 0;
     margin: 0;
+    border: none;
     transform: translateX(60px);
     overflow: hidden;
   }
+}
+
+@media (max-width: 640px) {
+  .feed-header { flex-wrap: wrap; gap: 8px; }
+  .feed-actions { flex-wrap: wrap; }
+  .feed-actions button, .feed-actions select { min-height: 36px; }
 }
 </style>

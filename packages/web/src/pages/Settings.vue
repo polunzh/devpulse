@@ -39,6 +39,7 @@ async function toggleSite(site: any) {
 }
 
 async function deleteSite(id: string) {
+  if (!confirm('Are you sure you want to delete this site?')) return;
   await api.sites.delete(id);
   await loadData();
 }
@@ -63,6 +64,7 @@ onMounted(loadData);
           <button class="danger" @click="deleteSite(site.id)">Delete</button>
         </div>
       </div>
+      <p v-if="sites.length === 0" class="empty-hint">No sites added yet. Add one below.</p>
       <div class="add-form">
         <input v-model="newSiteName" placeholder="Site name" />
         <select v-model="newSiteAdapter">
@@ -85,6 +87,7 @@ onMounted(loadData);
           @remove="removeInterest"
         />
       </div>
+      <p v-if="interests.length === 0" class="empty-hint">No interests yet. Add keywords to personalize recommendations.</p>
       <div class="add-form">
         <input v-model="newKeyword" placeholder="Add keyword..." @keydown.enter="addInterest" />
         <button @click="addInterest">Add</button>
@@ -108,4 +111,5 @@ onMounted(loadData);
 .add-form button { padding: 6px 16px; cursor: pointer; }
 .interests-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .danger { color: #d32f2f; }
+.empty-hint { color: #888; font-size: 13px; padding: 12px 0; }
 </style>

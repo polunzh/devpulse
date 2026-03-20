@@ -10,15 +10,17 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="site-filter">
+  <div class="site-filter" role="group" aria-label="Filter by site">
     <button
       :class="{ active: !activeSiteId }"
+      :aria-pressed="!activeSiteId"
       @click="emit('select', null)"
     >All</button>
     <button
       v-for="site in sites"
       :key="site.id"
       :class="{ active: activeSiteId === site.id }"
+      :aria-pressed="activeSiteId === site.id"
       @click="emit('select', site.id)"
     >{{ site.name }}</button>
   </div>
@@ -31,4 +33,5 @@ const emit = defineEmits<{
   background: white; cursor: pointer; font-size: 13px;
 }
 .site-filter button.active { background: #0969da; color: white; border-color: #0969da; }
+.site-filter button:focus-visible { outline: 2px solid #0969da; outline-offset: 1px; }
 </style>
