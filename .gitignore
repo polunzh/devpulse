@@ -10,3 +10,4 @@ dist-server/
 .claire/
 coverage/
 wrangler.local.toml
+.gstack/

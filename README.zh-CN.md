@@ -18,6 +18,7 @@
 - **Web UI** — 简洁的信息流列表，支持站点筛选、排序和设置管理
 - **筛选持久化** — 筛选条件同步到 URL 参数和 localStorage，可分享、可收藏
 - **已读动画隐藏** — 开启"隐藏已读"后，已读文章平滑滑出消失
+- **Open Graph 元标签** — 配置社交平台分享预览
 - **Cloudflare 部署** — Worker + D1 + Pages，单域名，Cloudflare Access 保护
 
 ## 技术栈

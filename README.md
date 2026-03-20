@@ -18,6 +18,7 @@ A personal developer hotspot content aggregator. Collects trending posts from Ha
 - **Web UI** — Clean feed list with site filtering, sorting, and settings management
 - **Filter persistence** — Filters saved to URL query params and localStorage, shareable and bookmark-friendly
 - **Animated read hiding** — Read posts smoothly animate out when "Hide read" is enabled
+- **Open Graph meta tags** — Configured for rich social sharing previews
 - **Cloudflare deployment** — Worker + D1 + Pages, single domain, protected by Cloudflare Access
 
 ## Tech Stack
