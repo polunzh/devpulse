@@ -6,11 +6,11 @@
 
 [English](./README.md) | [在线演示](https://polunzh.github.io/devpulse/)
 
-个人开发者热点内容聚合工具。从 HackerNews、Reddit、V2EX、Medium 等站点收集热门内容，支持 AI 个性化推荐。
+个人开发者热点内容聚合工具。从 HackerNews、Reddit、V2EX、Medium、Discourse 论坛等站点收集热门内容，支持 AI 个性化推荐。
 
 ## 功能特性
 
-- **多源聚合** — 插件化适配器，支持 HackerNews、Reddit、V2EX、Medium（易于扩展）
+- **多源聚合** — 插件化适配器，支持 HackerNews、Reddit、V2EX、Medium、Discourse（易于扩展）
 - **AI 推荐** — 支持多种 AI 提供商（DeepSeek、Kimi、Qwen、MiniMax、OpenAI、Claude），根据你的兴趣对文章评分和打标签
 - **已读追踪** — 标记已读，避免重复浏览
 - **兴趣学习** — 手动配置关键词 + 根据阅读历史自动学习

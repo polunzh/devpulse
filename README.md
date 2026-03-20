@@ -6,11 +6,11 @@
 
 [中文文档](./README.zh-CN.md) | [Live Demo](https://polunzh.github.io/devpulse/)
 
-A personal developer hotspot content aggregator. Collects trending posts from HackerNews, Reddit, V2EX, Medium and more, with AI-powered personalized recommendations.
+A personal developer hotspot content aggregator. Collects trending posts from HackerNews, Reddit, V2EX, Medium, Discourse forums and more, with AI-powered personalized recommendations.
 
 ## Features
 
-- **Multi-source aggregation** — Plugin-based adapters for HackerNews, Reddit, V2EX, Medium (easily extensible)
+- **Multi-source aggregation** — Plugin-based adapters for HackerNews, Reddit, V2EX, Medium, Discourse (easily extensible)
 - **AI recommendations** — Supports multiple AI providers (DeepSeek, Kimi, Qwen, MiniMax, OpenAI, Claude) for scoring and tagging posts based on your interests
 - **Read tracking** — Marks posts as read to avoid duplicate browsing
 - **Interest learning** — Manual keyword config + automatic learning from reading history
