@@ -8,6 +8,7 @@ import { postsRoutes } from './routes/posts.routes.js';
 import { sitesRoutes } from './routes/sites.routes.js';
 import { interestsRoutes } from './routes/interests.routes.js';
 import { fetchRoutes } from './routes/fetch.routes.js';
+import { adaptersRoutes } from './routes/adapters.routes.js';
 
 export interface AppServices {
   siteService: SiteService;
@@ -66,6 +67,7 @@ export async function buildApp(dbPath: string) {
   await app.register(sitesRoutes, { prefix: '/api' });
   await app.register(interestsRoutes, { prefix: '/api' });
   await app.register(fetchRoutes, { prefix: '/api' });
+  await app.register(adaptersRoutes, { prefix: '/api' });
 
   app.setNotFoundHandler((req, reply) => {
     if (!req.url.startsWith('/api')) {

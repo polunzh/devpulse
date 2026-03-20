@@ -7,6 +7,7 @@ import { postsRoutes } from './routes/posts.js';
 import { sitesRoutes } from './routes/sites.js';
 import { interestsRoutes } from './routes/interests.js';
 import { fetchRoutes } from './routes/fetch.js';
+import { adaptersRoutes } from './routes/adapters.js';
 
 export interface Env {
   DB: D1Database;
@@ -54,6 +55,7 @@ app.route('/api', postsRoutes);
 app.route('/api', sitesRoutes);
 app.route('/api', interestsRoutes);
 app.route('/api', fetchRoutes);
+app.route('/api', adaptersRoutes);
 
 // Cron trigger for scheduled fetch
 export default {
