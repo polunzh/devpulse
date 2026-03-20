@@ -15,9 +15,10 @@ export interface SiteConfig {
 export interface ConfigField {
   key: string;
   label: string;
-  type: 'text' | 'number';
+  type: 'text' | 'number' | 'select';
   required?: boolean;
   defaultValue?: string;
+  options?: { label: string; value: string }[];
 }
 
 export interface Adapter {
