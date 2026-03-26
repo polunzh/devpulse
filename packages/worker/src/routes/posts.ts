@@ -26,3 +26,9 @@ postsRoutes.post('/posts/:id/read', async (c) => {
   }
   return c.json({ ok: true });
 });
+
+postsRoutes.post('/posts/:id/ignore', async (c) => {
+  const { id } = c.req.param();
+  await c.var.services.postService.markAsIgnored(id);
+  return c.json({ ok: true });
+});

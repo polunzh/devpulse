@@ -61,4 +61,16 @@ describe('Database Schema', () => {
     expect(rows).toHaveLength(1);
     expect(rows[0].postId).toBe('p1');
   });
+
+  it('should insert and query ignored_history', async () => {
+    await db.insert(schema.sites).values({ id: 's1', name: 'HN', adapter: 'hn' }).run();
+    await db.insert(schema.posts).values({
+      id: 'p1', siteId: 's1', externalId: '1', title: 'T', url: 'http://x', fetchedAt: new Date().toISOString(),
+    }).run();
+    await db.insert(schema.ignoredHistory).values({ id: 'i1', postId: 'p1' }).run();
+
+    const rows = await db.select().from(schema.ignoredHistory).all();
+    expect(rows).toHaveLength(1);
+    expect(rows[0].postId).toBe('p1');
+  });
 });

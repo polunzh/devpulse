@@ -14,6 +14,7 @@ const loading = ref(false);
 const error = ref('');
 const readIds = ref(new Set<string>());
 const hidingIds = ref(new Set<string>());
+const ignoringIds = ref(new Set<string>());
 
 // Read filters from URL query params, fallback to localStorage
 const activeSiteId = ref<string | null>(
@@ -77,6 +78,37 @@ async function handleRead(id: string) {
         readIds.value.delete(id);
       }, 400);
     }, 800);
+  }
+}
+
+async function handleIgnore(id: string) {
+  if (ignoringIds.value.has(id)) return;
+
+  const index = posts.value.findIndex(p => p.id === id);
+  if (index === -1) return;
+
+  const post = posts.value[index];
+  ignoringIds.value.add(id);
+  hidingIds.value.add(id);
+
+  const removalTimer = window.setTimeout(() => {
+    posts.value = posts.value.filter(p => p.id !== id);
+    hidingIds.value.delete(id);
+  }, 400);
+
+  try {
+    await api.posts.ignore(id);
+  } catch {
+    window.clearTimeout(removalTimer);
+    hidingIds.value.delete(id);
+
+    const exists = posts.value.some(p => p.id === id);
+    if (!exists) {
+      posts.value.splice(index, 0, post);
+    }
+    error.value = 'Failed to hide this post. Please try again.';
+  } finally {
+    ignoringIds.value.delete(id);
   }
 }
 
@@ -145,6 +177,7 @@ const displayPosts = computed(() =>
         :post="post"
         :class="{ 'post-hiding': post.isHiding }"
         @read="handleRead"
+        @ignore="handleIgnore"
       />
       <p v-if="!loading && displayPosts.length === 0" class="empty">No posts yet. Add sites and fetch!</p>
     </div>

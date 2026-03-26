@@ -16,11 +16,16 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   read: [id: string];
+  ignore: [id: string];
 }>();
 
 function handleClick() {
   emit('read', props.post.id);
   window.open(props.post.url, '_blank');
+}
+
+function handleIgnore() {
+  emit('ignore', props.post.id);
 }
 
 function timeAgo(dateStr?: string) {
@@ -45,6 +50,11 @@ function timeAgo(dateStr?: string) {
       </div>
       <p class="post-reason" v-if="post.aiReason">{{ post.aiReason }}</p>
     </div>
+    <div class="post-actions">
+      <button class="ignore-button" type="button" @click.stop="handleIgnore" @keydown.stop>
+        Not interested
+      </button>
+    </div>
   </div>
 </template>
 
@@ -54,9 +64,13 @@ function timeAgo(dateStr?: string) {
   border-bottom: 1px solid var(--color-border-light);
   cursor: pointer;
   transition: all 0.15s;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
 }
 .post-item:hover { background: var(--color-primary-light); }
 .post-item:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
+.post-main { min-width: 0; flex: 1; }
 .post-item.read {
   opacity: 0.6;
   background: var(--color-bg);
@@ -83,5 +97,35 @@ function timeAgo(dateStr?: string) {
   margin: 6px 0 0;
   padding-left: 8px;
   border-left: 2px solid var(--color-accent);
+}
+.post-actions {
+  flex-shrink: 0;
+  align-self: center;
+}
+.ignore-button {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ignore-button:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: var(--color-error-bg);
+}
+
+@media (max-width: 640px) {
+  .post-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .post-actions {
+    align-self: flex-start;
+  }
 }
 </style>

@@ -64,6 +64,12 @@ export const readHistory = sqliteTable('read_history', {
   ...timestamps,
 });
 
+export const ignoredHistory = sqliteTable('ignored_history', {
+  id: text('id').primaryKey(),
+  postId: text('post_id').notNull().unique().references(() => posts.id),
+  ...timestamps,
+});
+
 export const interests = sqliteTable('interests', {
   id: text('id').primaryKey(),
   keyword: text('keyword').notNull().unique(),

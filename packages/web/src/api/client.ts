@@ -17,6 +17,8 @@ export const api = {
     },
     markAsRead: (id: string) =>
       request(`/posts/${id}/read`, { method: 'POST' }),
+    ignore: (id: string) =>
+      request(`/posts/${id}/ignore`, { method: 'POST' }),
   },
   sites: {
     list: () => request<any[]>('/sites'),

@@ -87,4 +87,30 @@ describe('PostService (extra coverage)', () => {
     const unread = await service.list({ unreadOnly: true });
     expect(unread).toHaveLength(1);
   });
+
+  it('should exclude ignored posts from default list', async () => {
+    await service.savePosts('s1', [
+      { externalId: '1', title: 'Keep', url: 'http://a', score: 10 },
+      { externalId: '2', title: 'Ignore', url: 'http://b', score: 20 },
+    ]);
+
+    const posts = await service.list({});
+    const ignoredPost = posts.find(p => p.title === 'Ignore');
+    await (service as any).markAsIgnored(ignoredPost.id);
+
+    const visiblePosts = await service.list({});
+    expect(visiblePosts.map(p => p.title)).toEqual(['Keep']);
+  });
+
+  it('should not duplicate ignored history', async () => {
+    await service.savePosts('s1', [
+      { externalId: '1', title: 'T', url: 'http://a', score: 10 },
+    ]);
+
+    const post = (await service.list({}))[0];
+    await (service as any).markAsIgnored(post.id);
+    await (service as any).markAsIgnored(post.id);
+
+    expect(await (service as any).isIgnored(post.id)).toBe(true);
+  });
 });

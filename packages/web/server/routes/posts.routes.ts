@@ -21,4 +21,9 @@ export const postsRoutes: FastifyPluginAsync = async (app) => {
     }
     return { ok: true };
   });
+
+  app.post<{ Params: { id: string } }>('/posts/:id/ignore', async (req) => {
+    await app.services.postService.markAsIgnored(req.params.id);
+    return { ok: true };
+  });
 };

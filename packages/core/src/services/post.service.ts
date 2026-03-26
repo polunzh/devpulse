@@ -1,6 +1,6 @@
-import { eq, and, notInArray } from 'drizzle-orm';
+import { eq, and, notInArray, sql } from 'drizzle-orm';
 import { v4 as uuid } from 'uuid';
-import { posts, readHistory, tags, postTags } from '../db/schema.js';
+import { posts, readHistory, ignoredHistory, tags, postTags } from '../db/schema.js';
 import type { AppDb } from '../db/connection.js';
 import type { RawPost } from '../adapters/adapter.interface.js';
 
@@ -14,6 +14,17 @@ interface ListOptions {
 
 export class PostService {
   constructor(private db: AppDb) {}
+
+  private async ensureIgnoredHistoryTable() {
+    await this.db.run(sql`
+      CREATE TABLE IF NOT EXISTS ignored_history (
+        id TEXT PRIMARY KEY,
+        post_id TEXT NOT NULL UNIQUE REFERENCES posts(id),
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )
+    `);
+  }
 
   async savePosts(siteId: string, rawPosts: (Omit<RawPost, 'publishedAt'> & { publishedAt?: Date })[]) {
     const now = new Date().toISOString();
@@ -46,8 +57,15 @@ export class PostService {
   }
 
   async list(options: ListOptions) {
+    await this.ensureIgnoredHistoryTable();
+
     let query = this.db.select().from(posts);
     const conditions = [];
+
+    const ignoredPostIds = (await this.db.select({ postId: ignoredHistory.postId }).from(ignoredHistory).all()).map((r: any) => r.postId);
+    if (ignoredPostIds.length > 0) {
+      conditions.push(notInArray(posts.id, ignoredPostIds));
+    }
 
     if (options.siteId) {
       conditions.push(eq(posts.siteId, options.siteId));
@@ -103,6 +121,20 @@ export class PostService {
 
   async isRead(postId: string): Promise<boolean> {
     return !!(await this.db.select().from(readHistory).where(eq(readHistory.postId, postId)).get());
+  }
+
+  async markAsIgnored(postId: string) {
+    await this.ensureIgnoredHistoryTable();
+
+    const existing = await this.db.select().from(ignoredHistory).where(eq(ignoredHistory.postId, postId)).get();
+    if (!existing) {
+      await this.db.insert(ignoredHistory).values({ id: uuid(), postId }).run();
+    }
+  }
+
+  async isIgnored(postId: string): Promise<boolean> {
+    await this.ensureIgnoredHistoryTable();
+    return !!(await this.db.select().from(ignoredHistory).where(eq(ignoredHistory.postId, postId)).get());
   }
 
   async getPostTags(postId: string): Promise<string[]> {
